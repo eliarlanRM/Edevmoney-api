@@ -19,9 +19,11 @@ public class PessoaService {
 	public Pessoa atualizar(Long codigo, Pessoa pessoa) {
 		Pessoa pessoaSalva = bucarPessoaPeloCodigo(codigo);
 		
-		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		pessoaSalva.getContatos().clear();
+		pessoaSalva.getContatos().addAll(pessoa.getContatos());
+		pessoaSalva.getContatos().forEach(c -> c.setPessoa(pessoaSalva));
 	
-		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
+		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo", "contatos");
 	
 		return this.pessoaRepository.save(pessoaSalva);
 	}
