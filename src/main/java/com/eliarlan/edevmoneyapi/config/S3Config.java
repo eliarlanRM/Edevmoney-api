@@ -1,5 +1,7 @@
 package com.eliarlan.edevmoneyapi.config;
 
+import org.springframework.context.annotation.Bean;
+
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -16,6 +18,7 @@ public class S3Config {
 	
 	private EdevmoneyApiProperty property;
 	
+	@Bean
 	public AmazonS3 amazonS3() {
 		AWSCredentials credenciais = new BasicAWSCredentials(
 				property.getS3().getAccessKeyId(),
