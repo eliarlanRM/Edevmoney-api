@@ -123,6 +123,12 @@
 		    <artifactId>jasperreports-fonts</artifactId>
 		    <version>6.17.0</version>
 		</dependency>
+		<!-- Amazon S3-->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk</artifactId>
+			<version>1.11.670</version>
+		</dependency>
 	</dependencies>
 
 	<build>
