@@ -7,6 +7,8 @@ public class EdevmoneyApiProperty {
 	
 	private String originPermitida = "http://localhost:8000"; // TODO: Configurar para diferentes ambientes
 	
+	private String remetente = "teste@teste.com";
+	
 	private final Seguranca seguranca = new Seguranca();
 	
 	private final Mail mail = new Mail();
@@ -27,6 +29,16 @@ public class EdevmoneyApiProperty {
 		return mail;
 	}
 	
+
+	public String getRemetente() {
+		return remetente;
+	}
+
+	public void setRemetente(String remetente) {
+		this.remetente = remetente;
+	}
+
+
 	public static class Seguranca {
 		
 		private boolean enableHttps;
@@ -72,4 +84,5 @@ public class EdevmoneyApiProperty {
 		}
 		
 	}
+
 }

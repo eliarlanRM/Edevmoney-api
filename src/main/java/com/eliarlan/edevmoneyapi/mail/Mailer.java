@@ -1,8 +1,10 @@
 package com.eliarlan.edevmoneyapi.mail;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -14,6 +16,10 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
+import com.eliarlan.edevmoneyapi.config.property.EdevmoneyApiProperty;
+import com.eliarlan.edevmoneyapi.model.Lancamento;
+import com.eliarlan.edevmoneyapi.model.Usuario;
+
 @Component
 public class Mailer {
 	
@@ -23,6 +29,27 @@ public class Mailer {
 	@Autowired
 	private TemplateEngine thymeleaf;
 	
+	@Autowired
+	private EdevmoneyApiProperty prop;
+	
+	public void avisarSobreLancamentosVencidos(
+			List<Lancamento> vencidos, List<Usuario> destinatarios) {
+		Map<String, Object> variaveis = new HashMap<>();
+		variaveis.put("lancamentos", vencidos);
+		
+		List<String> emails = destinatarios.stream()
+				.map(u -> u.getEmail())
+				.collect(Collectors.toList());
+		
+		this.enviarEmail(
+				prop.getRemetente(),
+				emails,
+				"Lançamentos vencidos",
+				"mail/aviso_lancamentos_vencidos",
+				variaveis);
+		System.out.println("Envio Finalizado...");
+	}
+
 	public void enviarEmail(String remetente,
 			List<String> destinatarios, String assunto, String template, 
 			Map<String, Object> variaveis) {

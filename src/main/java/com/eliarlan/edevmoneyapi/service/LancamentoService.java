@@ -15,10 +15,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.eliarlan.edevmoneyapi.dto.LancamentoEstatisticaPessoa;
+import com.eliarlan.edevmoneyapi.mail.Mailer;
 import com.eliarlan.edevmoneyapi.model.Lancamento;
 import com.eliarlan.edevmoneyapi.model.Pessoa;
+import com.eliarlan.edevmoneyapi.model.Usuario;
 import com.eliarlan.edevmoneyapi.repository.LancamentoRepository;
 import com.eliarlan.edevmoneyapi.repository.PessoaRepository;
+import com.eliarlan.edevmoneyapi.repository.UsuarioRepository;
 import com.eliarlan.edevmoneyapi.service.exception.PessoaInexistenteOuInativaException;
 
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -29,16 +32,31 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Service
 public class LancamentoService {
-
+	
+	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
+	
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 	
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+	
+	@Autowired
+	private Mailer mailer;
+	
+	// @Scheduled(cron = "0 0 6 * * *")
 	@Scheduled(fixedDelay = 1000 * 5)
 	public void avisarSobreLancamentosVencidos() {
-//		System.out.println(">>>>>>>>>>>>>>>sendo executado");
+		List<Lancamento> vencidos = lancamentoRepository
+				.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		
+		List<Usuario> destinatarios = usuarioRepository
+				.findByPermissoesDescricao(DESTINATARIOS);
+		
+		mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
 	}
 
 	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws Exception{
