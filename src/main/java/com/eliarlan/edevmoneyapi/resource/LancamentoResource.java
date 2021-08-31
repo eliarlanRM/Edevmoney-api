@@ -1,8 +1,6 @@
 package com.eliarlan.edevmoneyapi.resource;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -46,6 +44,7 @@ import com.eliarlan.edevmoneyapi.repository.filter.LancamentoFilter;
 import com.eliarlan.edevmoneyapi.repository.projection.ResumoLancamento;
 import com.eliarlan.edevmoneyapi.service.LancamentoService;
 import com.eliarlan.edevmoneyapi.service.exception.PessoaInexistenteOuInativaException;
+import com.eliarlan.edevmoneyapi.storage.S3;
 
 @RestController
 @RequestMapping("/lancamento")
@@ -63,16 +62,15 @@ public class LancamentoResource {
 	@Autowired
 	private MessageSource messageSource;
 	
+	@Autowired
+	private  S3 s3;
+	
 	
 	@PostMapping("/anexo")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
 	public String uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
-		OutputStream out = new FileOutputStream(
-				"c://Users/Eliarlan/Desktop/" + LocalDate.now() + "__"+ anexo.getOriginalFilename());
-		out.write(anexo.getBytes());
-		out.close();
-		
-		return "ok!";
+		String nome = s3.salvarTemporariamente(anexo);
+		return nome;
 	}
 	
 	@GetMapping("/relatorios/por-pessoa")
