@@ -47,7 +47,6 @@ public class Mailer {
 				"Lançamentos vencidos",
 				"mail/aviso_lancamentos_vencidos",
 				variaveis);
-		System.out.println("Envio Finalizado...");
 	}
 
 	public void enviarEmail(String remetente,

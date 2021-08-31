@@ -9,6 +9,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -35,6 +37,8 @@ public class LancamentoService {
 	
 	private static final String DESTINATARIOS = "ROLE_PESQUISAR_LANCAMENTO";
 	
+	private static final Logger logger = LoggerFactory.getLogger(LancamentoService.class);
+	
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
@@ -47,16 +51,38 @@ public class LancamentoService {
 	@Autowired
 	private Mailer mailer;
 	
+	@Scheduled(fixedDelay = 1000 * 60 * 30)
 	// @Scheduled(cron = "0 0 6 * * *")
-	@Scheduled(fixedDelay = 1000 * 5)
 	public void avisarSobreLancamentosVencidos() {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Preparando envio de e-mails de aviso de lançamentos vencidos");
+		}		
+		
 		List<Lancamento> vencidos = lancamentoRepository
 				.findByDataVencimentoLessThanEqualAndDataPagamentoIsNull(LocalDate.now());
+		if (vencidos.isEmpty()) {
+			logger.info("Sem lançamentos vencidos para aviso.");
+			
+			return;
+		}
+		
+		logger.info("Existem {} lançamentos vencidos.", vencidos.size());
 		
 		List<Usuario> destinatarios = usuarioRepository
 				.findByPermissoesDescricao(DESTINATARIOS);
 		
+		if (destinatarios.isEmpty()) {
+			logger.warn("Existem Lançamentos vencidos, mas o sistema não encontrou destinatários.");
+			return;
+		}
+		
+		
 		mailer.avisarSobreLancamentosVencidos(vencidos, destinatarios);
+		
+		logger.info("Envio de e-mail de aviso concluído.");
+		
+		
+	
 	}
 
 	public byte[] relatorioPorPessoa(LocalDate inicio, LocalDate fim) throws Exception{
