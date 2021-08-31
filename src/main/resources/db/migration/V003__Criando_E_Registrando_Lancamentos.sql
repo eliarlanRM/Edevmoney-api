@@ -1,3 +1,20 @@
+CREATE SEQUENCE lancamento_seq;
+
+CREATE TABLE lancamento (
+	codigo BIGINT PRIMARY KEY DEFAULT NEXTVAL ('lancamento_seq'),
+	descricao VARCHAR(50) NOT NULL,
+	data_vencimento DATE NOT NULL,
+	data_pagamento DATE,
+	valor DECIMAL(10,2) NOT NULL,
+	observacao VARCHAR(100),
+	tipo VARCHAR(20) NOT NULL,
+	codigo_categoria BIGINT NOT NULL,
+	codigo_pessoa BIGINT NOT NULL,
+	anexo VARCHAR(200),
+	FOREIGN KEY (codigo_categoria) REFERENCES categoria(codigo),
+	FOREIGN KEY (codigo_pessoa) REFERENCES pessoa(codigo)
+) ;
+
 INSERT INTO lancamento (descricao, data_vencimento, data_pagamento, valor, observacao, tipo, codigo_categoria, codigo_pessoa) values ('Salário mensal', '2020-01-27', null, 6500.00, 'Distribuição de lucros', 'RECEITA', 1, 1);
 INSERT INTO lancamento (descricao, data_vencimento, data_pagamento, valor, observacao, tipo, codigo_categoria, codigo_pessoa) values ('Supermercado', '2020-03-10', '2020-03-01', 100.32, null, 'DESPESA', 2, 2);
 INSERT INTO lancamento (descricao, data_vencimento, data_pagamento, valor, observacao, tipo, codigo_categoria, codigo_pessoa) values ('Academia', '2020-04-10', null, 120, null, 'DESPESA', 3, 3);
