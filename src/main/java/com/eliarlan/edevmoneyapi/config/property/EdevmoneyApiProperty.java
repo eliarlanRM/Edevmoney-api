@@ -26,6 +26,8 @@ public class EdevmoneyApiProperty {
 		public String accessKeyId;
 
 		public String secretAccessKey;
+		
+		private String bucket = "edev-edevmoney-arquivos";
 
 		public String getAccessKeyId() {
 			return accessKeyId;
@@ -41,6 +43,14 @@ public class EdevmoneyApiProperty {
 
 		public void setSecretAccessKey(String secretAccessKey) {
 			this.secretAccessKey = secretAccessKey;
+		}
+
+		public String getBucket() {
+			return bucket;
+		}
+
+		public void setBucket(String bucket) {
+			this.bucket = bucket;
 		}
 	}	
 
