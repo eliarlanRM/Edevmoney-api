@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.eliarlan.edevmoneyapi.dto.Anexo;
 import com.eliarlan.edevmoneyapi.dto.LancamentoEstatisticaCategoria;
 import com.eliarlan.edevmoneyapi.dto.LancamentoEstatisticaDia;
 import com.eliarlan.edevmoneyapi.event.RecursoCriadoEvent;
@@ -49,6 +50,7 @@ import com.eliarlan.edevmoneyapi.storage.S3;
 @RestController
 @RequestMapping("/lancamento")
 public class LancamentoResource {
+	
 	@Autowired
 	private LancamentoRepository lancamentoRepository;
 	
@@ -68,9 +70,9 @@ public class LancamentoResource {
 	
 	@PostMapping("/anexo")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
-	public String uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
+	public Anexo uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
 		String nome = s3.salvarTemporariamente(anexo);
-		return nome;
+		return new Anexo(nome, s3.configurarUrl(nome));
 	}
 	
 	@GetMapping("/relatorios/por-pessoa")

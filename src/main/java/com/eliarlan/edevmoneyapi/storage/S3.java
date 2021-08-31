@@ -7,7 +7,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,32 +40,36 @@ public class S3 {
 		objectMetadata.setContentLength(arquivo.getSize());
 		
 		String nomeUnico = gerarNomeUnico(arquivo.getOriginalFilename());
+		
 		try {
 			PutObjectRequest putObjectRequest = new PutObjectRequest(
 					property.getS3().getBucket(),
 					nomeUnico,
-					arquivo.getInputStream(),
+					arquivo.getInputStream(), 
 					objectMetadata)
 					.withAccessControlList(acl);
+			
 			putObjectRequest.setTagging(new ObjectTagging(
 					Arrays.asList(new Tag("expirar", "true"))));
 			
 			amazonS3.putObject(putObjectRequest);
 			
-			if(logger.isDebugEnabled()) {
-				logger.debug("Arquivo {} enviado com sucesso apra o S3.",
+			if (logger.isDebugEnabled()) {
+				logger.debug("Arquivo {} enviado com sucesso para o S3.", 
 						arquivo.getOriginalFilename());
 			}
 			
 			return nomeUnico;
-			
 		} catch (IOException e) {
-			throw new RuntimeException("Problemas no envio do arquivo para o S3!", e);
+			throw new RuntimeException("Problemas ao tentar enviar o arquivo para o S3.", e);
 		}
-		
 	}
 	
-	@Bean
+	public String configurarUrl(String objeto) {
+		return "\\\\" + property.getS3().getBucket() +
+				".s3.amazonaws.com/" + objeto;
+	}
+
 	private String gerarNomeUnico(String originalFilename) {
 		return UUID.randomUUID().toString() + "_" + originalFilename;
 	}

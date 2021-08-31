@@ -2,6 +2,7 @@ package com.eliarlan.edevmoneyapi.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
@@ -16,6 +17,7 @@ import com.amazonaws.services.s3.model.lifecycle.LifecycleFilter;
 import com.amazonaws.services.s3.model.lifecycle.LifecycleTagPredicate;
 import com.eliarlan.edevmoneyapi.config.property.EdevmoneyApiProperty;
 
+@Configuration
 public class S3Config {
 	
 	@Autowired
