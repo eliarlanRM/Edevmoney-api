@@ -123,7 +123,7 @@ public class LancamentoService {
 		if (!lancamento.getPessoa().equals(lancamentoSalvo.getPessoa())) {
 			validarPessoa(lancamento);
 		}
-		if (StringUtils.isEmpty(lancamento.getAnexo())
+		if (StringUtils.hasText(lancamento.getAnexo())
 				&& StringUtils.hasText(lancamento.getAnexo())) {
 			s3.remover(lancamentoSalvo.getAnexo());
 		} else if (StringUtils.hasLength(lancamento.getAnexo())
