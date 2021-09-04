@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("edevmoney")
 public class EdevmoneyApiProperty {
 	
-	private String originPermitida = "http://localhost:8000"; // TODO: Configurar para diferentes ambientes
+	private String originPermitida = "http://localhost:4200"; // TODO: Configurar para diferentes ambientes
 	
 	private String remetente = "teste@teste.com";
 	
